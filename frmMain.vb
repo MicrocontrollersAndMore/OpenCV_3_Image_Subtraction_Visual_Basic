@@ -1,4 +1,4 @@
-﻿'ImageSubtractionVB
+﻿'Image_Subtraction_VB
 'frmMain.vb
 '
 'Emgu CV 3.0.0
