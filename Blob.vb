@@ -1,7 +1,7 @@
-﻿'Image_Subtraction_VB
+﻿'ImageSubtractionVB
 'Blob.vb
 
-'Emgu CV 3.0.0
+'Emgu CV 3.1.0
 
 Option Explicit On      'require explicit declaration of variables, this is NOT Python !!
 Option Strict On        'restrict implicit data type conversions to only widening conversions

@@ -1,7 +1,7 @@
-﻿'Image_Subtraction_VB
+﻿'ImageSubtractionVB
 'frmMain.vb
 '
-'Emgu CV 3.0.0
+'Emgu CV 3.1.0
 '
 'form components:
 'tableLayoutPanel
@@ -155,7 +155,7 @@ Public Class frmMain
                 CvInvoke.Circle(imgFrame2Copy, blob.centerPosition, 3, SCALAR_GREEN, -1)        'draw a filled-in green circle at the center
             Next
             
-            ibOriginal.Image = imgFrame2Copy
+            imageBox.Image = imgFrame2Copy
 
                     'now we prepare for the next iteration
 
@@ -177,16 +177,6 @@ Public Class frmMain
     End Sub
     
 End Class
-
-
-
-
-
-
-
-
-
-
 
 
 
