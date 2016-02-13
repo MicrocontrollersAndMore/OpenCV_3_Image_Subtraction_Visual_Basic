@@ -112,8 +112,9 @@ Public Class frmMain
             Dim structuringElement7x7 As Mat = CvInvoke.GetStructuringElement(ElementShape.Rectangle, New Size(7, 7), New Point(-1, -1))
             Dim structuringElement9x9 As Mat = CvInvoke.GetStructuringElement(ElementShape.Rectangle, New Size(9, 9), New Point(-1, -1))
 
-            CvInvoke.Dilate(imgThresh, imgThresh, structuringElement7x7, New Point(-1, -1), 1, BorderType.Default, New MCvScalar(0, 0, 0))
-            CvInvoke.Erode(imgThresh, imgThresh, structuringElement3x3, New Point(-1, -1), 1, BorderType.Default, New MCvScalar(0, 0, 0))
+            CvInvoke.Dilate(imgThresh, imgThresh, structuringElement5x5, New Point(-1, -1), 1, BorderType.Default, New MCvScalar(0, 0, 0))
+            CvInvoke.Dilate(imgThresh, imgThresh, structuringElement5x5, New Point(-1, -1), 1, BorderType.Default, New MCvScalar(0, 0, 0))
+            CvInvoke.Erode(imgThresh, imgThresh, structuringElement5x5, New Point(-1, -1), 1, BorderType.Default, New MCvScalar(0, 0, 0))
 
             Dim imgThreshCopy As Mat = imgThresh.Clone()
 
@@ -121,9 +122,21 @@ Public Class frmMain
 
             CvInvoke.FindContours(imgThreshCopy, contours, Nothing, RetrType.External, ChainApproxMethod.ChainApproxSimple)
 
-            For i As Integer = 0 To contours.Size() - 1
+            Dim imgContours As New Mat(imgThresh.Size, DepthType.Cv8U, 3)
 
-                Dim possibleBlob As New Blob(contours(i))
+            CvInvoke.DrawContours(imgContours, contours, -1, SCALAR_WHITE, -1)
+
+            CvInvoke.Imshow("imgContours", imgContours)
+
+            Dim convexHulls As New VectorOfVectorOfPoint(contours.Size())
+
+            For i As Integer = 0 To contours.Size() - 1
+                CvInvoke.ConvexHull(contours(i), convexHulls(i))
+            Next
+            
+            For i As Integer = 0 To convexHulls.Size() - 1
+
+                Dim possibleBlob As New Blob(convexHulls(i))
 
                 If (possibleBlob.intRectArea > 100 And _
                     possibleBlob.dblAspectRatio >= 0.2 And _
@@ -136,17 +149,17 @@ Public Class frmMain
                 
             Next
 
-            Dim imgContours As New Mat(imgThresh.Size, DepthType.Cv8U, 3)
+            Dim imgConvexHulls As New Mat(imgThresh.Size, DepthType.Cv8U, 3)
 
-            contours = New VectorOfVectorOfPoint()              're-instiantate contours since contours.Clear() does not seem to work as expected
+            convexHulls = New VectorOfVectorOfPoint()              're-instiantate contours since contours.Clear() does not seem to work as expected
 
             For Each blob As Blob In blobs
-                contours.Push(blob.contour)
+                convexHulls.Push(blob.contour)
             Next
             
-            CvInvoke.DrawContours(imgContours, contours, -1, SCALAR_WHITE, -1)
+            CvInvoke.DrawContours(imgConvexHulls, convexHulls, -1, SCALAR_WHITE, -1)
 
-            CvInvoke.Imshow("imgContours", imgContours)
+            CvInvoke.Imshow("imgConvexHulls", imgConvexHulls)
 
             imgFrame2Copy = imgFrame2.Clone()           'get another copy of frame 2 since we changed the previous frame 2 copy in the processing above
             
